@@ -4,7 +4,15 @@ import '@asseinfo/react-kanban/dist/styles.css'
 import { db } from '../firebase/config';
 
 
-export default function BoardWrapper({ board, onNewCard, onRenameColumn, onRenameCard, onRemoveCard, onColumnNew }) {
+export default function BoardWrapper({
+    board,
+    onNewCard,
+    onRenameColumn,
+    onRenameCard,
+    onRemoveCard,
+    onCardDragEnd,
+    onColumnNew,
+    onColumnRemove }) {
 
     //Uncontrolled
     function UncontrolledBoard() {
@@ -45,18 +53,16 @@ export default function BoardWrapper({ board, onNewCard, onRenameColumn, onRenam
                     allowAddCard={{ on: "top" }}
                     onColumnNew={onColumnNew}
                     onColumnRename={onRenameColumn}
-                    onCardNew={onNewCard}
-                    onCardRename={onRenameCard}
-                    onCardRemove={onRemoveCard}
-                    onNewColumnRemove={(draftColumn) => ({
-                        id: new Date().getTime(),
-                        ...draftColumn
-                    })}
+                    onColumnRemove={onColumnRemove}
+                    onCardDragEnd={onCardDragEnd}
                     onNewColumnConfirm={(draftColumn) => ({
                         id: new Date().getTime(),
                         title: "new Card",
                         ...draftColumn
                     })}
+                    onCardNew={onNewCard}
+                    onCardRename={onRenameCard}
+                    onCardRemove={onRemoveCard}
                     onNewCardConfirm={draftCard => ({
                         id: new Date().getTime(),
                         ...draftCard

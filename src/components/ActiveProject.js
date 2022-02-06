@@ -9,6 +9,8 @@ import { db } from "../firebase/config";
 import { v4 as uuidv4 } from 'uuid';
 
 function ActiveProject() {
+    const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
     const { id } = useParams()
     const { document, error } = UseDocument('projects', id)
 
@@ -43,7 +45,8 @@ function ActiveProject() {
                     id: cardId,
                     key: card.id,
                     title: card.title,
-                    description: card.description
+                    description: card.description,
+                    cardInfo: card
                 })
 
                 cardId++;
@@ -60,7 +63,9 @@ function ActiveProject() {
                     onRenameColumn={onRenameColumn}
                     onRenameCard={onRenameCard}
                     onRemoveCard={onRemoveCard}
-                    onColumnNew={onColumnNew} />
+                    onColumnNew={onColumnNew}
+                    onColumnRemove={onColumnRemove}
+                    onCardDragEnd={onCardDragEnd} />
             </div>
         )
     }
@@ -74,13 +79,19 @@ function ActiveProject() {
             id: newCardId,
             projectId: id,
             title: card.title,
-            createdAt: Timestamp.fromDate(new Date())
+            createdAt: Timestamp.fromDate(new Date()),
+            position: column.cards.length
         })
     }
 
-    async function onRenameColumn(_, column) {
-        await updateDoc(doc(db, "boards", id, "columns", column.key), {
-            title: column.title
+    async function onColumnNew(board, column) {
+        let newColId = uuidv4()
+
+        await setDoc(doc(db, "boards", id, "columns", newColId), {
+            id: newColId,
+            title: column.title,
+            createdAt: Timestamp.fromDate(new Date()),
+            position: board.columns.length
         })
     }
 
@@ -91,18 +102,47 @@ function ActiveProject() {
         })
     }
 
+    async function onRenameColumn(_, column) {
+        await updateDoc(doc(db, "boards", id, "columns", column.key), {
+            title: column.title
+        })
+    }
+
     async function onRemoveCard(_, column, card) {
         await deleteDoc(doc(db, "boards", id, "columns", column.key, "cards", card.key))
     }
 
-    async function onColumnNew(_, column) {
-        let newColId = uuidv4()
+    async function onColumnRemove(_, column) {
+        await deleteDoc(doc(db, "boards", id, "columns", column.key))
+    }
 
-        await setDoc(doc(db, "boards", id, "columns", newColId), {
-            id: newColId,
-            title: column.title,
-            createdAt: Timestamp.fromDate(new Date())
-        })
+    async function onCardDragEnd(board, card, source, destination) {
+        // await delay(2000)
+
+        if (source.fromColumnId !== destination.toColumnId) {
+            await Promise.all([
+                setDoc(doc(db, "boards", id, "columns", board.columns[destination.toColumnId - 1].key, "cards", card.key), {
+                    ...card.cardInfo,
+                    colId: board.columns[destination.toColumnId - 1].key
+                }), 
+                deleteDoc(doc(db, "boards", id, "columns", card.cardInfo.colId, "cards", card.key))
+            ])
+        }
+
+        for (let i = 0; i < board.columns.length; i++) {
+            // console.log("col " + board.columns[i].title + " = " + i)
+            await updateDoc(doc(db, "boards", id, "columns", board.columns[i].key), {
+                position: i
+            })
+
+            for (let j = 0; j < board.columns[i].cards.length; j++) {
+                // console.log("card " + board.columns[i].cards[j].title + " = " + j)
+
+                await updateDoc(doc(db, "boards", id, "columns", board.columns[i].key, "cards", board.columns[i].cards[j].key), {
+                    position: j
+                })
+            }
+        }
     }
 
     return (

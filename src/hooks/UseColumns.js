@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { db } from "../firebase/config";
 
-import { collection, collectionGroup, onSnapshot, query, where } from 'firebase/firestore'
+import { collection, collectionGroup, onSnapshot, query, where, orderBy } from 'firebase/firestore'
 
 export const UseColumns = (col, id, _q, _sq = null) => {
     const [columns, setColumns] = useState(null)
@@ -9,14 +9,14 @@ export const UseColumns = (col, id, _q, _sq = null) => {
     const q = useRef(_q).current
     const sq = useRef(_sq).current
 
-    useEffect(() => {
+    useEffect(() => {   
         let ref = collection(db, col, id, "columns")
 
         if (q) {
             if (sq) {
-                ref = query(ref, where(...q), where(...sq))
+                ref = query(ref, where(...q), where(...sq), orderBy('position'))
             } else {
-                ref = query(ref, where(...q))
+                ref = query(ref, where(...q), orderBy('position'))
             }
         }
 

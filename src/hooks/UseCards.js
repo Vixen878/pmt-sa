@@ -14,9 +14,9 @@ export const UseCards = (col, _q, _sq = null) => {
 
         if (q) {
             if (sq) {
-                ref = query(ref, where(...q), where(...sq), orderBy('createdAt', 'desc'))
+                ref = query(ref, where(...q), where(...sq), orderBy('position'))
             } else {
-                ref = query(ref, where(...q), orderBy('createdAt', 'desc'))
+                ref = query(ref, where(...q), orderBy('position'))
             }
         }
 
