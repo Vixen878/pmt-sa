@@ -21,12 +21,12 @@ function LoginPage() {
                 <AnimatedBlurBlobs />
             </div>
             <div className='absolute'>
-                <div className='w-[76rem] h-[43rem] items-center grid grid-cols-2 bg-white shadow-lg rounded-xl '>
+                <div className='lg:w-[76rem] lg:h-[43rem] h-screen lg:items-center grid lg:grid-cols-2 lg:bg-white shadow-lg rounded-xl bg-gred bg-opacity-[0.04] backdrop-blur-xl'>
                     {/* Left Content */}
-                    <div className='flex flex-col p-10'>
+                    <div className='flex flex-col p-10 lg:pt-10 pt-40'>
                         <div>
                             <img src="Header_Logo.png" alt="" />
-                            <h1 className='font-bold text-3xl  text-gray-600 mt-5 md:w-4/5'>
+                            <h1 className='font-bold text-3xl  text-gray-600 mt-5 md:w-full'>
                                 Welcome back, please Sign In to your account.
                             </h1>
                             <div className='flex justify-center mt-5'>
@@ -35,7 +35,7 @@ function LoginPage() {
                         </div>
                     </div>
                     {/* Right content */}
-                    <div className='rounded-r-xl'>
+                    <div className='rounded-r-xl hidden lg:block'>
                         {/* <iframe className='rounded-r-xl' src='https://my.spline.design/untitled-bacab23fa961e5d4d49bfd3be724c30d/' frameborder='0' width='100%' height='688px'></iframe> */}
                         <LoginLeftSideComponent />
                     </div>

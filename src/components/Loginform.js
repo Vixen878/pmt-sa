@@ -53,7 +53,7 @@ function Loginform() {
 
 
     return (
-        <div className='w-full  pr-20'>
+        <div className='w-full'>
             {error && <p className='text-red-600'>{error}</p>}
             <div className="relative mt-4">
                 <input onChange={(event) => {
