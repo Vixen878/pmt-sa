@@ -4,16 +4,17 @@ import '@asseinfo/react-kanban/dist/styles.css'
 import { db } from '../firebase/config';
 
 
-export default function BoardWrapper({ board }) {
+export default function BoardWrapper({ board, onNewCard, onRenameColumn, onRenameCard, onRemoveCard, onColumnNew }) {
 
     //Uncontrolled
     function UncontrolledBoard() {
         return (
-            <Board
+            <div>
+                {/* <Board
                 allowRemoveLane
                 allowRenameColumn
                 allowRemoveCard
-                allowRemoveColumn
+                allowRemoveColumn   
                 onLaneRemove={console.log}
                 onCardRemove={console.log}
                 initialBoard={board}
@@ -22,10 +23,7 @@ export default function BoardWrapper({ board }) {
                     // console.log("This is val", val.columns[0].title)
                 }}
                 onLaneRename={console.log}
-                onNewCardConfirm={(draftCard) => ({
-                    id: new Date().getTime(),
-                    ...draftCard
-                })}
+                onNewCardConfirm={onNewCard}
                 onCardNew={console.log}
                 allowAddColumn={{ on: "right" }}
                 onNewColumnConfirm={(draftColumn) => ({
@@ -34,7 +32,37 @@ export default function BoardWrapper({ board }) {
                     ...draftColumn
                 })}
                 onColumnNew={console.log}
-            />
+            /> */}
+                <Board
+                    allowRemoveLane
+                    allowRenameColumn
+                    allowRemoveCard
+                    allowRemoveColumn
+                    onLaneRemove={console.log}
+                    onLaneRename={console.log}
+                    allowAddColumn={{ on: "right" }}
+                    initialBoard={board}
+                    allowAddCard={{ on: "top" }}
+                    onColumnNew={onColumnNew}
+                    onColumnRename={onRenameColumn}
+                    onCardNew={onNewCard}
+                    onCardRename={onRenameCard}
+                    onCardRemove={onRemoveCard}
+                    onNewColumnRemove={(draftColumn) => ({
+                        id: new Date().getTime(),
+                        ...draftColumn
+                    })}
+                    onNewColumnConfirm={(draftColumn) => ({
+                        id: new Date().getTime(),
+                        title: "new Card",
+                        ...draftColumn
+                    })}
+                    onNewCardConfirm={draftCard => ({
+                        id: new Date().getTime(),
+                        ...draftCard
+                    })}
+                />
+            </div>
         );
     }
     return (

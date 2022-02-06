@@ -6,7 +6,7 @@ import { UseAuthContext } from "../hooks/useAuthContext"
 import { UseDocument } from '../hooks/useDocument';
 import { useHistory } from "react-router-dom";
 
-import { collection, doc, setDoc, onSnapshot, query, addDoc, Timestamp, orderBy, deleteDoc, updateDoc } from "firebase/firestore";
+import { collection, doc, setDoc, onSnapshot, query, addDoc, Timestamp, orderBy, deleteDoc, updateDoc, where } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 import { db, storage } from "../firebase/config";
 
@@ -40,7 +40,7 @@ export default function RequestSummary({ request }) {
 
         // creates an id with client id + account manager id
         const user2 = chat.createdBy.id
-        const id = user1 > user2 ? `${user1 + user2}` : `${user2 + user1}`
+        const id = request.id
 
         // getting uploaded media url
         let url;
@@ -67,19 +67,20 @@ export default function RequestSummary({ request }) {
         setChat(docs)
 
         const user2 = docs.createdBy.id
-        const id = user1 > user2 ? `${user1 + user2}` : `${user2 + user1}`
-
-        const msgsRef = collection(db, 'messages', id, 'chat')
-        const q = query(msgsRef, orderBy('createdAt', 'asc'))
+        const id = request.id
 
         const addAccountManagerId = {
             Acid: user1,
-            Cid: user2
+            Cid: user2,
+            projectId: request.id
         }
 
         await setDoc(doc(db, "messages", id), {
             ...addAccountManagerId
         })
+
+        const msgsRef = collection(db, 'messages', id, 'chat')
+        const q = query(msgsRef, orderBy('createdAt', 'asc'))
 
         onSnapshot(q, querySnapshot => {
             let msgs = []
