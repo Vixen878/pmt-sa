@@ -3,6 +3,7 @@ import { useState, useEffect } from "react"
 import { db } from '../firebase/config'
 import { UseAuthContext } from "../hooks/useAuthContext";
 import { UseDocument } from "../hooks/useDocument"
+import { GetUserAccessLevel, Users } from '../hooks/useUserAccessLevel';
 
 import { getDoc, setDoc, doc, updateDoc } from '@firebase/firestore';
 
@@ -17,7 +18,8 @@ function Settings() {
     const [isProfilePictureUploadPending, setIsProfilePictureUploadPending] = useState(false);
 
     const { user } = UseAuthContext()
-    const { document } = UseDocument('AccountManagers', user.uid)
+    const { accessLevel } = GetUserAccessLevel();
+    const { document } = UseDocument(accessLevel == Users.AccountManager ? 'AccountManagers' : 'admins', user.uid)
 
     function fileInput(event) {
         setInputFileName(event.target.files[0])
@@ -40,7 +42,7 @@ function Settings() {
         async () => {
             await getDownloadURL(uploadTask.snapshot.ref)
                 .then(async (profilePictureURL) => {
-                    await updateDoc(doc(db, "AccountManagers", user.uid), {
+                    await updateDoc(doc(db, accessLevel == Users.AccountManager ? 'AccountManagers' : 'admins', user.uid), {
                         profilePicture: profilePictureURL,
                         isDefaultProfilePicture: false
                     })

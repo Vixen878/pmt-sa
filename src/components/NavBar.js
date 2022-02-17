@@ -14,9 +14,9 @@ export default function NavBar() {
 
     const { user } = UseAuthContext()
 
-    const { document, error } = UseDocument('AccountManagers', user.uid)
-
     const { accessLevel } = GetUserAccessLevel();
+
+    const { document } = UseDocument(accessLevel == Users.AccountManager ? 'AccountManagers' : 'admins', user.uid)
 
     return (
         <motion.div
