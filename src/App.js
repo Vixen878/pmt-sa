@@ -10,6 +10,7 @@ import PendingProject from './pages/Request';
 import { GetUserAccessLevel, Users } from './hooks/useUserAccessLevel';
 import Clients from './pages/Clients';
 import Project from './pages/Project';
+import Settings from './pages/Settings';
 
 function App() {
 
@@ -44,6 +45,7 @@ function App() {
               {user && <Dashboard />}
               {!user && <LoginPage />}
             </Route>
+
             <Route path="/clients">
               {user && <Clients />}
               {!user && <LoginPage />}
@@ -54,14 +56,22 @@ function App() {
               {user && <ManageAccountManagers />}
               {!user && <LoginPage />}
             </Route>
+
             <Route path="/manageprojects">
               {user && <ManageProjects />}
               {!user && <LoginPage />}
             </Route>
+
+            <Route path="/settings">
+              {!user && <Redirect to="/login" />}
+              {user && <Settings />}
+            </Route>
+
             <Route path="/login">
               {user && <Redirect to="/" />}
               {!user && <LoginPage />}
             </Route>
+
             <Route path="*">
               Error
               {/* <ErrorPage /> */}

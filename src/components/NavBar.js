@@ -6,12 +6,15 @@ import { GetUserAccessLevel, Users } from '../hooks/useUserAccessLevel';
 import AdminNavBar from "./AdminNavBar";
 import AccountManagerNavBar from "./AccountManagerNavBar";
 import { useLogout } from "../hooks/useLogout";
+import { UseDocument } from "../hooks/useDocument"
 
 export default function NavBar() {
 
-    const { logout, isPending, error } = useLogout()
+    const { logout, isPending } = useLogout()
 
     const { user } = UseAuthContext()
+
+    const { document, error } = UseDocument('AccountManagers', user.uid)
 
     const { accessLevel } = GetUserAccessLevel();
 
@@ -48,7 +51,7 @@ export default function NavBar() {
                         </button>}
                 </div> */}
                 <div>
-                    <Avatar src={user.photoURL} userName={user.displayName} emailAddress={user.email} />
+                    <Avatar src={document?.profilePicture} userName={user.displayName} emailAddress={user.email} />
                 </div>
             </div>
         </motion.div>
