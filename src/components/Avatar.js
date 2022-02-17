@@ -5,7 +5,8 @@ function Avatar({ src, userName, emailAddress }) {
     return (
         <div className="flex flex-row justify-between items-center h-36">
             <div className="flex items-center space-x-4">
-                <img className="rounded-full ml-4 bg-primaryGreen w-16 h-16" src={src} alt="User Avatar" />
+                {src && <img className="rounded-full ml-4 bg-primaryGreen w-16 h-16" src={src} alt="User Avatar" />}
+                {!src && <img className="rounded-full ml-4 w-16 h-16" src="https://raw.githubusercontent.com/cruip/vuejs-admin-dashboard-template/main/src/images/user-36-06.jpg" alt="Default user" />}
                 <div className="flex flex-col">
                     <span className="text-lg font-semibold">{userName}</span>
                     <span className="text-xs">{emailAddress}</span>
