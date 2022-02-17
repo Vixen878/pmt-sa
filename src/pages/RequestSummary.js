@@ -27,19 +27,49 @@ export default function RequestSummary({ request }) {
     const { user } = UseAuthContext()
     const user1 = user.uid
 
-    const [chat, setChat] = useState("")
-
     // Messages
     const [text, setText] = useState("")
     const [file, setFile] = useState("")
     const [messages, setMessages] = useState([])
+
+    useEffect(async () => { 
+        const user2 = document?.createdBy.id
+        const id = request.id
+
+        if (user2 != null) {
+            const addAccountManagerId = {
+                Acid: user1,
+                Cid: user2,
+                projectId: request.id
+            }
+    
+            await setDoc(doc(db, "messages", id), {
+                ...addAccountManagerId
+            })
+        }
+
+        const msgsRef = collection(db, 'messages', id, 'chat')
+        const q = query(msgsRef, orderBy('createdAt', 'asc'))
+
+        let unsubscribe = onSnapshot(q, querySnapshot => {
+            let msgs = []
+            querySnapshot.forEach(d => {
+                msgs.push(d.data())
+            })
+            setMessages(msgs)
+        })
+
+        return () => {
+            unsubscribe()
+        };
+    }, []);
 
     // Handling when message is sent
     const handleSubmit = async (e) => {
         e.preventDefault()
 
         // creates an id with client id + account manager id
-        const user2 = chat.createdBy.id
+        const user2 = document.createdBy.id
         const id = request.id
 
         // getting uploaded media url
@@ -60,35 +90,6 @@ export default function RequestSummary({ request }) {
             media: url || ""
         })
         setText("")
-    }
-
-    // Clicking on client to open chat
-    const selectClient = async (docs) => {
-        setChat(docs)
-
-        const user2 = docs.createdBy.id
-        const id = request.id
-
-        const addAccountManagerId = {
-            Acid: user1,
-            Cid: user2,
-            projectId: request.id
-        }
-
-        await setDoc(doc(db, "messages", id), {
-            ...addAccountManagerId
-        })
-
-        const msgsRef = collection(db, 'messages', id, 'chat')
-        const q = query(msgsRef, orderBy('createdAt', 'asc'))
-
-        onSnapshot(q, querySnapshot => {
-            let msgs = []
-            querySnapshot.forEach(d => {
-                msgs.push(d.data())
-            })
-            setMessages(msgs)
-        })
     }
 
     // Display Categories
@@ -162,7 +163,7 @@ export default function RequestSummary({ request }) {
                         <span className="text-xl font-semibold text-gray-700">
                             Requested By
                         </span>
-                        <div onClick={() => selectClient(document)} className="mt-3 cursor-pointer">Client: {request.createdBy.displayName}</div>
+                        <div className="mt-3">Client: {request.createdBy.displayName}</div>
                     </div>
                     <div className="mt-10 flex space-x-4">
                         <span className="rounded border border-red-400 p-3 hover:bg-red-600 hover:text-white cursor-pointer font-semibold">
@@ -179,48 +180,41 @@ export default function RequestSummary({ request }) {
 
             {/* Chat Section */}
             <div className="flex justify-center text-xl w-1/2 p-5 rounded-lg border">
-                {chat ?
-                    (
-                        <div className="font-semibold h-screen w-full">
+                <div className="font-semibold h-screen w-full">
 
-                            <div class="flex items-center space-x-4">
-                                <img src="https://images.unsplash.com/photo-1549078642-b2ba4bda0cdb?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=3&amp;w=144&amp;h=144" alt="" class="w-10 sm:w-16 h-10 sm:h-16 rounded-full" />
-                                <div class="flex flex-col leading-tight">
-                                    <div class="text-2xl mt-1 flex items-center">
-                                        <span class="text-gray-700 mr-3">{chat.createdBy.displayName}</span>
-                                        <span class="text-green-500">
-                                            <svg width="10" height="10">
-                                                <circle cx="5" cy="5" r="5" fill="currentColor"></circle>
-                                            </svg>
-                                        </span>
-                                    </div>
-                                    <span class="text-lg text-gray-600">Client</span>
-                                </div>
+                    <div class="flex items-center space-x-4">
+                        <img src="https://images.unsplash.com/photo-1549078642-b2ba4bda0cdb?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=3&amp;w=144&amp;h=144" alt="" class="w-10 sm:w-16 h-10 sm:h-16 rounded-full" />
+                        <div class="flex flex-col leading-tight">
+                            <div class="text-2xl mt-1 flex items-center">
+                                <span class="text-gray-700 mr-3">{document?.createdBy.displayName}</span>
+                                <span class="text-green-500">
+                                    <svg width="10" height="10">
+                                        <circle cx="5" cy="5" r="5" fill="currentColor"></circle>
+                                    </svg>
+                                </span>
                             </div>
-                            {/* <div className="flex items-center space-x-5">
-                                <div className="w-11 h-11 bg-gray-600 rounded-full">
-                                </div>
-                                <div className="flex justify-center">
-                                    {chat.createdBy.displayName}
-                                </div>
-                            </div> */}
-                            <div className="mt-3 w-full bg-gray-500 h-[2px]"></div>
-                            <div className="overflow-y-auto text-sm border-b-2">
-                                {messages.length ? messages.map((msg, i) => <Message key={i} msg={msg} user1={user1} />) : null}
-                            </div>
-                            <div className="absolute pb-7 bottom-0 flex flex-col justify-between">
-                                <MessageForm
-                                    handleSubmit={handleSubmit}
-                                    text={text}
-                                    setText={setText}
-                                    setFile={setFile} />
-                            </div>
+                            <span class="text-lg text-gray-600">Client</span>
                         </div>
-                    ) :
-                    (
-                        <div className="flex items-center justify-center">Select The Client To Start Conversation</div>
-                    )
-                }
+                    </div>
+                    {/* <div className="flex items-center space-x-5">
+                        <div className="w-11 h-11 bg-gray-600 rounded-full">
+                        </div>
+                        <div className="flex justify-center">
+                            {chat.createdBy.displayName}
+                        </div>
+                    </div> */}
+                    <div className="mt-3 w-full bg-gray-500 h-[2px]"></div>
+                    <div className="absolute pb-7 bottom-0 flex flex-col justify-between">
+                        <div className="overflow-y-auto text-sm border-b-2">
+                            {messages.length ? messages.map((msg, i) => <Message key={i} msg={msg} user1={user1} />) : null}
+                        </div>
+                        <MessageForm
+                            handleSubmit={handleSubmit}
+                            text={text}
+                            setText={setText}
+                            setFile={setFile} />
+                    </div>
+                </div>
             </div>
         </div>
 
