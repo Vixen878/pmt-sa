@@ -71,7 +71,7 @@ export default function ManageAccountManagers() {
                                                     <td class="p-2 whitespace-nowrap">
                                                         <div class="flex items-center">
                                                             <img className="rounded-full ml-4 bg-primaryGreen w-10 h-10 mr-2 sm:mr-3" src={user.profilePicture} alt="User Avatar" />
-                                                            <div class="font-medium text-gray-800">{user.name}</div>
+                                                            <div class="font-medium text-gray-800">{user.displayName}</div>
                                                         </div>
                                                     </td>
                                                     <td class="p-2 whitespace-nowrap">
@@ -91,8 +91,6 @@ export default function ManageAccountManagers() {
                             </div>
                         </div>
                     </div>
-
-
 
                     <Transition appear show={isOpen} as={Fragment}>
                         <Dialog

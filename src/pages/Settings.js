@@ -5,7 +5,7 @@ import { UseAuthContext } from "../hooks/useAuthContext";
 import { UseDocument } from "../hooks/useDocument"
 import { GetUserAccessLevel, Users } from '../hooks/useUserAccessLevel';
 
-import { getDoc, setDoc, doc, updateDoc } from '@firebase/firestore';
+import { doc, updateDoc } from '@firebase/firestore';
 
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage"
 import { storage } from "../firebase/config"
@@ -14,12 +14,13 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 function Settings() {
-    const [fileInputName, setInputFileName] = useState(null);
-    const [isProfilePictureUploadPending, setIsProfilePictureUploadPending] = useState(false);
-
     const { user } = UseAuthContext()
     const { accessLevel } = GetUserAccessLevel();
     const { document } = UseDocument(accessLevel == Users.AccountManager ? 'AccountManagers' : 'admins', user.uid)
+
+    const [displayName, setDisplayName] = useState(null);
+    const [fileInputName, setInputFileName] = useState(null);
+    const [isProfilePictureUploadPending, setIsProfilePictureUploadPending] = useState(false);
 
     function fileInput(event) {
         setInputFileName(event.target.files[0])
@@ -53,6 +54,18 @@ function Settings() {
                 })
             }
         )
+    }
+
+    async function onNameChanged(newName) {
+        try {
+            await updateDoc(doc(db, accessLevel == Users.AccountManager ? 'AccountManagers' : 'admins', user.uid), {
+                displayName: newName
+            })
+
+            toast.info('Display name changed', { autoClose: 2000 })
+        } catch {
+            toast.error('Error changing name', { autoClose: 6000 })
+        }
     }
 
     return (
@@ -105,6 +118,19 @@ function Settings() {
                     </button>}
                 </div>
             </form>
+
+            {document &&
+                <div className="mt-6">
+                    <span className="text-lg text-gray-600 font-semibold">Display Name</span>
+                    <input
+                        onKeyPress={(e) => e.key === 'Enter' && onNameChanged(e.target.value)}
+                        onChange={e => setDisplayName(e.target.value)}
+                        value={displayName}
+                        type="text"
+                        required
+                        placeholder="Display Name"
+                        className="p-2 mt-2 rounded-md focus:outline-none focus:ring-1 focus:to-blue-700 border w-full" />
+                </div>}
         </div>
     );
 }
