@@ -134,7 +134,7 @@ export default function ManageAccountManagers() {
                                             as="h3"
                                             className="text-lg font-medium leading-6 text-gray-900"
                                         >
-                                            Create a New Project
+                                            Add a New Account Manager
                                         </Dialog.Title>
 
                                         <AddAccountManagerModal cModal={closeModal} />
@@ -143,7 +143,7 @@ export default function ManageAccountManagers() {
 
                                             <button
                                                 type="button"
-                                                className="inline-flex justify-center px-4 py-2 text-sm font-medium text-red-900 bg-gred rounded-md hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
+                                                className="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-gred rounded-md hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
                                                 onClick={closeModal}
                                             >
                                                 Cancel
