@@ -24,7 +24,7 @@ export default function AccountManagerDashboard() {
                         </div>
                     </div>
                 </div>
-                <div className="flex h-screen flex-row space-x-7">
+                <div className="flex h-screen flex-row space-x-7 mb-8">
                     <div className="mt-4  flex flex-col overflow-auto w-[500px] bg-white shadow-xl border rounded-xl">
                         <div className="pt-4 w-full pl-4 flex justify-between">
                             <span className="text-xl font-semibold text-green-800">Project requests</span>
@@ -32,11 +32,9 @@ export default function AccountManagerDashboard() {
                         </div>
                         <div className="m-2">
                             {documents && documents.map(doc => (
-                                <div className="p-4 mt-4 flex rounded-lg shadow-lg space-x-6 items-center border">
+                                <div className="p-4 mt-4 mx-2 flex rounded-lg shadow-lg space-x-6 items-center border">
                                     <div className="flex flex-col items-center justify-center">
-                                        <div className="bg-green-500 w-24 flex h-24 rounded-full">
-                                            Profile Picture
-                                        </div>
+                                        <img className="rounded-full ml-4 bg-primaryGreen w-24 h-24" src="/images/idea.png" alt="User Avatar" />
                                     </div>
                                     <Link className="flex flex-col" to={`/requests/${doc.id}`} key={doc.id}>
                                         <span className="text-primaryGreen text-2xl font-semibold">{doc.name}</span>
@@ -57,7 +55,6 @@ export default function AccountManagerDashboard() {
                                 <ActiveProjects />
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>

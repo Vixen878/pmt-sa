@@ -31,11 +31,11 @@ export default function ManageAccountManagers() {
 
             {accessLevel === Users.AccountManager && <div>You dont have access to this page</div> === history.push('/')}
 
-            {accessLevel == Users.Admin &&
-                <section class="antialiased bg-gray-100 text-gray-600 h-screen w-auto px-4">
-                    <div class="flex flex-col justify-center h-full">
+            {accessLevel === Users.Admin &&
+                <section class="antialiased bg-gray-100 text-gray-600 h-screen w-full px-4">
+                    <div class="flex flex-col pt-8 h-full">
                         <div class="w-screen max-w-2xl mx-auto bg-white shadow-lg rounded-sm border border-gray-200">
-                            <header class="px-5 py-4 border-b border-gray-100">
+                            <header class="px-5 py-4 border-b border-gray-100 justify-center">
                                 <h2 class="font-semibold text-gray-800">Account Managers</h2>
                                 <motion.div
                                     whileHover={{ scale: 1.01, originX: 0 }}
@@ -70,8 +70,8 @@ export default function ManageAccountManagers() {
                                                 <tr>
                                                     <td class="p-2 whitespace-nowrap">
                                                         <div class="flex items-center">
-                                                            <div class="w-10 h-10 flex-shrink-0 mr-2 sm:mr-3"><img class="rounded-full" src="https://raw.githubusercontent.com/cruip/vuejs-admin-dashboard-template/main/src/images/user-36-06.jpg" width="40" height="40" alt="Philip Harbach" /></div>
-                                                            <div class="font-medium text-gray-800">{user.name}</div>
+                                                            <img className="rounded-full ml-4 bg-primaryGreen w-10 h-10 mr-2 sm:mr-3" src={user.profilePicture} alt="User Avatar" />
+                                                            <div class="font-medium text-gray-800">{user.displayName}</div>
                                                         </div>
                                                     </td>
                                                     <td class="p-2 whitespace-nowrap">
@@ -91,8 +91,6 @@ export default function ManageAccountManagers() {
                             </div>
                         </div>
                     </div>
-
-
 
                     <Transition appear show={isOpen} as={Fragment}>
                         <Dialog
@@ -134,7 +132,7 @@ export default function ManageAccountManagers() {
                                             as="h3"
                                             className="text-lg font-medium leading-6 text-gray-900"
                                         >
-                                            Create a New Project
+                                            Add a New Account Manager
                                         </Dialog.Title>
 
                                         <AddAccountManagerModal cModal={closeModal} />
@@ -143,7 +141,7 @@ export default function ManageAccountManagers() {
 
                                             <button
                                                 type="button"
-                                                className="inline-flex justify-center px-4 py-2 text-sm font-medium text-red-900 bg-gred rounded-md hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
+                                                className="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-gred rounded-md hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
                                                 onClick={closeModal}
                                             >
                                                 Cancel
