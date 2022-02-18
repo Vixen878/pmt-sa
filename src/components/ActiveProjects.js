@@ -1,8 +1,14 @@
 import { Link } from "react-router-dom"
 import { UseCollection } from "../hooks/useCollection"
 
+import { UseAuthContext } from '../hooks/useAuthContext';
+
 export default function ActiveProjects() {
-    const { documents } = UseCollection('projects')
+    const { user } = UseAuthContext()
+
+    const { documents } = UseCollection('projects',
+        ['cid', '==', user.uid])
+        
     return (
         <div>
             {documents && documents.map(doc => (
