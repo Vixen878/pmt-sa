@@ -31,11 +31,11 @@ export default function ManageAccountManagers() {
 
             {accessLevel === Users.AccountManager && <div>You dont have access to this page</div> === history.push('/')}
 
-            {accessLevel == Users.Admin &&
-                <section class="antialiased bg-gray-100 text-gray-600 h-screen w-auto px-4">
-                    <div class="flex flex-col justify-center h-full">
+            {accessLevel === Users.Admin &&
+                <section class="antialiased bg-gray-100 text-gray-600 h-screen w-full px-4">
+                    <div class="flex flex-col pt-8 h-full">
                         <div class="w-screen max-w-2xl mx-auto bg-white shadow-lg rounded-sm border border-gray-200">
-                            <header class="px-5 py-4 border-b border-gray-100">
+                            <header class="px-5 py-4 border-b border-gray-100 justify-center">
                                 <h2 class="font-semibold text-gray-800">Account Managers</h2>
                                 <motion.div
                                     whileHover={{ scale: 1.01, originX: 0 }}
