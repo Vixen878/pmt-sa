@@ -34,10 +34,7 @@ export default function AccountManagerDashboard() {
                             {documents && documents.map(doc => (
                                 <div className="p-4 mt-4 mx-2 flex rounded-lg shadow-lg space-x-6 items-center border">
                                     <div className="flex flex-col items-center justify-center">
-                                        <img className="rounded-full ml-4 bg-primaryGreen w-16 h-16" src={src} alt="User Avatar" />
-                                        <div className="bg-green-500 w-24 flex h-24 rounded-full">
-                                            Profile Picture
-                                        </div>
+                                        <img className="rounded-full ml-4 bg-primaryGreen w-24 h-24" src="/images/idea.png" alt="User Avatar" />
                                     </div>
                                     <Link className="flex flex-col" to={`/requests/${doc.id}`} key={doc.id}>
                                         <span className="text-primaryGreen text-2xl font-semibold">{doc.name}</span>

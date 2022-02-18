@@ -11,10 +11,7 @@ function Clients() {
             {documents && documents.map(doc => (
                 <div className="p-4 mt-4 flex rounded-lg shadow-lg space-x-6 items-center border">
                     <div className="flex flex-col items-center justify-center">
-                        <div className="bg-purple-500 w-24 flex h-24 rounded-full">
-                            Profile Picture
-                        </div>
-
+                        <img className="rounded-full ml-4 bg-primaryGreen w-16 h-16" src="https://icon-library.com/images/default-user-icon/default-user-icon-13.jpg" alt="User Avatar" />
                     </div>
                     <Link className="flex flex-col" to="#">
                         <span className="text-sm text-gray-400">{doc.displayName}</span>
