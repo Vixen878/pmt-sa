@@ -32,37 +32,41 @@ export default function RequestSummary({ request }) {
     const [file, setFile] = useState("")
     const [messages, setMessages] = useState([])
 
-    useEffect(async () => { 
-        const user2 = document?.createdBy.id
-        const id = request.id
-
-        if (user2 != null) {
-            const addAccountManagerId = {
-                Acid: user1,
-                Cid: user2,
-                projectId: request.id
+    useEffect(() => { 
+        let chatFetch = async () => { 
+            const user2 = document?.createdBy.id
+            const id = request.id
+    
+            if (user2 != null) {
+                const addAccountManagerId = {
+                    Acid: user1,
+                    Cid: user2,
+                    projectId: request.id
+                }
+        
+                await setDoc(doc(db, "messages", id), {
+                    ...addAccountManagerId
+                })
             }
     
-            await setDoc(doc(db, "messages", id), {
-                ...addAccountManagerId
+            const msgsRef = collection(db, 'messages', id, 'chat')
+            const q = query(msgsRef, orderBy('createdAt', 'asc'))
+    
+            let unsubscribe = onSnapshot(q, querySnapshot => {
+                let msgs = []
+                querySnapshot.forEach(d => {
+                    msgs.push(d.data())
+                })
+                setMessages(msgs)
             })
+    
+            return () => {
+                unsubscribe()
+            };
         }
 
-        const msgsRef = collection(db, 'messages', id, 'chat')
-        const q = query(msgsRef, orderBy('createdAt', 'asc'))
-
-        let unsubscribe = onSnapshot(q, querySnapshot => {
-            let msgs = []
-            querySnapshot.forEach(d => {
-                msgs.push(d.data())
-            })
-            setMessages(msgs)
-        })
-
-        return () => {
-            unsubscribe()
-        };
-    }, []);
+        chatFetch()
+    }, [document?.createdBy.id, request.id, user1]);
 
     // Handling when message is sent
     const handleSubmit = async (e) => {
