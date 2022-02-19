@@ -4,6 +4,7 @@ import { useLogout } from "../hooks/useLogout";
 
 export default function AccountManagerNavBar() {
     const { logout, isPending, error } = useLogout()
+    
     return (
         <nav className="flex flex-col mt-24 ml-24 space-y-10">
             <div className="pb-10">

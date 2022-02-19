@@ -3,7 +3,7 @@ import Attachment from './Attachment';
 
 const MessageForm = ({ handleSubmit, text, setText, setFile }) => {
     return (
-        <form className='w-[706px]' onSubmit={handleSubmit}>
+        <form className='w-full' onSubmit={handleSubmit}>
             <div className="pt-4 mb-2 sm:mb-0">
                 <div className="relative flex">
                     <input

@@ -19,7 +19,7 @@ function Project() {
     }
 
     return (
-        <div className="w-full">
+        <div className="w-full h-full">
             <ActiveProject project={document} />
         </div>
     )

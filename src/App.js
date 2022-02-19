@@ -23,66 +23,68 @@ function App() {
     <div className='flex'>
       {authIsReady && (
         <BrowserRouter>
-          <div className='flex'>
-            {user && <NavBar />}
+          {user && <div className='flex w-[20%]'>
+            <NavBar />
+          </div>}
+          <div className={user ? 'w-[80%]' : 'w-full'}>
+            <Switch>
+              <Route exact path="/">
+                {!user && <Redirect to="/login" />}
+                {user && <Dashboard />}
+              </Route>
+
+              <Route path="/requests/:id">
+                {user && <PendingProject />}
+                {!user && <LoginPage />}
+              </Route>
+
+              <Route path="/project/:id">
+                {user && <Project />}
+                {!user && <LoginPage />}
+              </Route>
+
+              <Route path="/accountmanagers/:id">
+                {user && <Dashboard />}
+                {!user && <LoginPage />}
+              </Route>
+
+              <Route path="/clients">
+                {user && <Clients />}
+                {!user && <LoginPage />}
+              </Route>
+
+              <Route path="/accountmanagers">
+                {user && accessLevel === Users.AccountManager && <Redirect to="/" />}
+                {user && <ManageAccountManagers />}
+                {!user && <LoginPage />}
+              </Route>
+
+              <Route path="/manageprojects">
+                {user && <ManageProjects />}
+                {!user && <LoginPage />}
+              </Route>
+
+              <Route path="/categories">
+                {user && <ManageCategories />}
+                {!user && <LoginPage />}
+              </Route>
+
+              <Route path="/settings">
+                {!user && <Redirect to="/login" />}
+                {user && <Settings />}
+              </Route>
+
+              <Route path="/login">
+                {user && <Redirect to="/" />}
+                {!user && <LoginPage />}
+              </Route>
+
+              <Route path="*">
+                Error
+                {/* <ErrorPage /> */}
+              </Route>
+            </Switch>
           </div>
-          <Switch>
-            <Route exact path="/">
-              {!user && <Redirect to="/login" />}
-              {user && <Dashboard />}
-            </Route>
-
-            <Route path="/requests/:id">
-              {user && <PendingProject />}
-              {!user && <LoginPage />}
-            </Route>
-
-            <Route path="/project/:id">
-              {user && <Project />}
-              {!user && <LoginPage />}
-            </Route>
-
-            <Route path="/accountmanagers/:id">
-              {user && <Dashboard />}
-              {!user && <LoginPage />}
-            </Route>
-
-            <Route path="/clients">
-              {user && <Clients />}
-              {!user && <LoginPage />}
-            </Route>
-
-            <Route path="/accountmanagers">
-              {user && accessLevel === Users.AccountManager && <Redirect to="/" />}
-              {user && <ManageAccountManagers />}
-              {!user && <LoginPage />}
-            </Route>
-
-            <Route path="/manageprojects">
-              {user && <ManageProjects />}
-              {!user && <LoginPage />}
-            </Route>
-
-            <Route path="/categories">
-              {user && <ManageCategories />}
-              {!user && <LoginPage />}
-            </Route>
-
-            <Route path="/settings">
-              {!user && <Redirect to="/login" />}
-              {user && <Settings />}
-            </Route>
-
-            <Route path="/login">
-              {user && <Redirect to="/" />}
-              {!user && <LoginPage />}
-            </Route>
-
-            <Route path="*">
-              Error
-              {/* <ErrorPage /> */}
-            </Route>
-          </Switch>
         </BrowserRouter>
       )}
     </div>

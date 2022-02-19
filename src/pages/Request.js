@@ -17,7 +17,7 @@ export default function PendingProject() {
     }
 
     return (
-        <div className='w-full'>
+        <div className='w-full h-full'>
             <RequestSummary request={document}/>
         </div>
     )
