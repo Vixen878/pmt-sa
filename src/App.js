@@ -11,6 +11,7 @@ import { GetUserAccessLevel, Users } from './hooks/useUserAccessLevel';
 import Clients from './pages/Clients';
 import Project from './pages/Project';
 import Settings from './pages/Settings';
+import ManageCategories from './components/ManageCategories';
 
 function App() {
 
@@ -59,6 +60,11 @@ function App() {
 
             <Route path="/manageprojects">
               {user && <ManageProjects />}
+              {!user && <LoginPage />}
+            </Route>
+
+            <Route path="/categories">
+              {user && <ManageCategories />}
               {!user && <LoginPage />}
             </Route>
 
