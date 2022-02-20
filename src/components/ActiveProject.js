@@ -7,6 +7,7 @@ import { collection, doc, setDoc, onSnapshot, query, addDoc, Timestamp, orderBy,
 import { db } from "../firebase/config";
 
 import { v4 as uuidv4 } from 'uuid';
+import Chat from "./Chat";
 
 function ActiveProject() {
     const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -56,16 +57,24 @@ function ActiveProject() {
         });
 
         return (
-            <div className="w-full">
+            <div className="h-full">
                 <span className='text-4xl'>{document.name}</span>
-                <BoardWrapper board={boardData}
-                    onNewCard={onNewCard}
-                    onRenameColumn={onRenameColumn}
-                    onRenameCard={onRenameCard}
-                    onRemoveCard={onRemoveCard}
-                    onColumnNew={onColumnNew}
-                    onColumnRemove={onColumnRemove}
-                    onCardDragEnd={onCardDragEnd} />
+                <div className="flex h-full">
+                    <div className="w-3/4">
+                        <BoardWrapper
+                        board={boardData}
+                        onNewCard={onNewCard}
+                        onRenameColumn={onRenameColumn}
+                        onRenameCard={onRenameCard}
+                        onRemoveCard={onRemoveCard}
+                        onColumnNew={onColumnNew}
+                        onColumnRemove={onColumnRemove}
+                        onCardDragEnd={onCardDragEnd} />
+                    </div>
+                    <div className="w-1/4 h-full mt-[-3%]">
+                        <Chat id={id} />
+                    </div>
+                </div>
             </div>
         )
     }
@@ -124,7 +133,7 @@ function ActiveProject() {
                 setDoc(doc(db, "boards", id, "columns", board.columns[destination.toColumnId - 1].key, "cards", card.key), {
                     ...card.cardInfo,
                     colId: board.columns[destination.toColumnId - 1].key
-                }), 
+                }),
                 deleteDoc(doc(db, "boards", id, "columns", card.cardInfo.colId, "cards", card.key))
             ])
         }

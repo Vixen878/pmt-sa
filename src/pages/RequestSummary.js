@@ -16,6 +16,7 @@ import { Link } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
 
 import { UseFirestore } from '../hooks/useFirestore';
+import Chat from "../components/Chat";
 // import { doc, deleteDoc } from "firebase/firestore";
 // import { db } from "../firebase/config";
 
@@ -32,26 +33,26 @@ export default function RequestSummary({ request }) {
     const [file, setFile] = useState("")
     const [messages, setMessages] = useState([])
 
-    useEffect(() => { 
-        let chatFetch = async () => { 
+    useEffect(() => {
+        let chatFetch = async () => {
             const user2 = document?.createdBy.id
             const id = request.id
-    
+
             if (user2 != null) {
                 const addAccountManagerId = {
                     Acid: user1,
                     Cid: user2,
                     projectId: request.id
                 }
-        
+
                 await setDoc(doc(db, "messages", id), {
                     ...addAccountManagerId
                 })
             }
-    
+
             const msgsRef = collection(db, 'messages', id, 'chat')
             const q = query(msgsRef, orderBy('createdAt', 'asc'))
-    
+
             let unsubscribe = onSnapshot(q, querySnapshot => {
                 let msgs = []
                 querySnapshot.forEach(d => {
@@ -59,7 +60,7 @@ export default function RequestSummary({ request }) {
                 })
                 setMessages(msgs)
             })
-    
+
             return () => {
                 unsubscribe()
             };
@@ -68,40 +69,11 @@ export default function RequestSummary({ request }) {
         chatFetch()
     }, [document?.createdBy.id, request.id, user1]);
 
-    // Handling when message is sent
-    const handleSubmit = async (e) => {
-        e.preventDefault()
-
-        // creates an id with client id + account manager id
-        const user2 = document.createdBy.id
-        const id = request.id
-
-        // getting uploaded media url
-        let url;
-        if (file) {
-            const fileRef = ref(storage, `chatFiles/${new Date().getTime()} - ${file.name}`)
-            const snap = await uploadBytes(fileRef, file)
-            const downloadUrl = await getDownloadURL(ref(storage, snap.ref.fullPath))
-            url = downloadUrl
-        }
-
-        // Adding message to "Messages" document
-        await addDoc(collection(db, 'messages', id, 'chat'), {
-            text,
-            from: user1,
-            to: user2,
-            createdAt: Timestamp.fromDate(new Date()),
-            media: url || ""
-        })
-        setText("")
-    }
-
     // Display Categories
     var categories = []
     for (var i = 0; i < request.category.length; i++) {
         categories.push(request.category[i].value.Category);
     }
-    console.log(request.category)
 
     // Approving Request
     let history = useHistory()
@@ -137,8 +109,8 @@ export default function RequestSummary({ request }) {
     }
 
     return (
-        <div className="h-screen flex px-11 pt-24">
-            <div className="w-1/2 p-5">
+        <div className="flex h-full">
+            <div className="w-3/5 p-5">
                 <div>
                     <span className="text-4xl text-gray-700 font-bold">{request.name}</span>
                 </div>
@@ -183,42 +155,8 @@ export default function RequestSummary({ request }) {
             </div>
 
             {/* Chat Section */}
-            <div className="flex justify-center text-xl w-1/2 p-5 rounded-lg border">
-                <div className="font-semibold h-screen w-full">
-
-                    <div class="flex items-center space-x-4">
-                        <img src="https://images.unsplash.com/photo-1549078642-b2ba4bda0cdb?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=3&amp;w=144&amp;h=144" alt="" class="w-10 sm:w-16 h-10 sm:h-16 rounded-full" />
-                        <div class="flex flex-col leading-tight">
-                            <div class="text-2xl mt-1 flex items-center">
-                                <span class="text-gray-700 mr-3">{document?.createdBy.displayName}</span>
-                                <span class="text-green-500">
-                                    <svg width="10" height="10">
-                                        <circle cx="5" cy="5" r="5" fill="currentColor"></circle>
-                                    </svg>
-                                </span>
-                            </div>
-                            <span class="text-lg text-gray-600">Client</span>
-                        </div>
-                    </div>
-                    {/* <div className="flex items-center space-x-5">
-                        <div className="w-11 h-11 bg-gray-600 rounded-full">
-                        </div>
-                        <div className="flex justify-center">
-                            {chat.createdBy.displayName}
-                        </div>
-                    </div> */}
-                    <div className="mt-3 w-full bg-gray-500 h-[2px]"></div>
-                    <div className="absolute pb-7 bottom-0 flex flex-col justify-between">
-                        <div className="overflow-y-auto text-sm border-b-2">
-                            {messages.length ? messages.map((msg, i) => <Message key={i} msg={msg} user1={user1} />) : null}
-                        </div>
-                        <MessageForm
-                            handleSubmit={handleSubmit}
-                            text={text}
-                            setText={setText}
-                            setFile={setFile} />
-                    </div>
-                </div>
+            <div className="w-2/5 h-full">
+                <Chat id={id} />
             </div>
         </div>
 
