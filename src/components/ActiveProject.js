@@ -79,7 +79,7 @@ function ActiveProject() {
                     <div className="flex w-3/4">
                         <span className='text-4xl'>{document.name}</span>
                         <div className="flex-1"></div>
-                        {!document.isCompleted &&
+                        {!document?.isCompleted &&
                             <span className="rounded border p-3 bg-primaryGreen font-semibold text-white hover:bg-green-700 cursor-pointer right"
                                 onClick={() => { if (window.confirm("Are you sure you want to mark the project as completed?")) markAsCompleted() }}>
                                 Mark as Completed
@@ -89,7 +89,7 @@ function ActiveProject() {
                 </div>
                 <div className="flex h-full">
                     <div className="w-3/4 relative pt-3">
-                        {document.isCompleted &&
+                        {document?.isCompleted &&
                             <div className="absolute h-full w-full flex items-center justify-center backdrop-blur-md">
                                 <span className="text-green-700 text-2xl">Project completed</span>
                             </div>
