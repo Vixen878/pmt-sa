@@ -156,7 +156,7 @@ export default function RequestSummary({ request }) {
 
             {/* Chat Section */}
             <div className="w-2/5 h-full">
-                <Chat id={id} />
+                <Chat id={id} project={document} />
             </div>
         </div>
 
