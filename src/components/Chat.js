@@ -1,19 +1,18 @@
 import React from 'react';
 import { useState, useEffect } from "react";
 
-import { UseDocument } from '../hooks/useDocument';
 import { UseCollection } from "../hooks/useCollection";
 
 import { UseAuthContext } from "../hooks/useAuthContext"
 
-import { collection, onSnapshot, query, addDoc, doc, where, Timestamp, orderBy, getDoc, getDocs } from "firebase/firestore";
+import { collection, onSnapshot, query, addDoc, Timestamp, orderBy } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 import { db, storage } from "../firebase/config";
 
 import Message from "../components/Message";
 import MessageForm from "../components/MessageForm";
 
-export default function Chat({ id }) {
+export default function Chat({ id, project }) {
 
     const { documents } = UseCollection('messages')
 
@@ -88,7 +87,8 @@ export default function Chat({ id }) {
                         handleSubmit={handleSubmit}
                         text={text}
                         setText={setText}
-                        setFile={setFile} />
+                        setFile={setFile}
+                        project={project} />
                     <div className="overflow-y-auto text-sm border-b-2">
                         {messages.length ? messages.map((msg, i) => <Message key={i} msg={msg} user1={user1} />) : null}
                     </div>
