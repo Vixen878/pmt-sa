@@ -23,7 +23,7 @@ export default function NavBar() {
             initial={{ x: '-100vw' }}
             animate={{ x: 0 }}
             transition={{ type: 'spring', stiffness: 40 }}
-            className="antialiased relative overflow-hidden">
+            className="antialiased relative overflow-hidden w-full">
             <div className="absolute top-[700px] -left-32 blur-lg">
                 < AnimatedBlurBlobs />
             </div>
