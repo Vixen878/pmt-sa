@@ -102,6 +102,19 @@ export default function RequestSummary({ request }) {
             title: "To-Do"
         })
 
+        const notificationRef = doc(collection(db, "notifications"));
+        try {
+            await setDoc(notificationRef, {
+                content: 'Your project has been approved',
+                id: notificationRef.id,
+                is_read: false,
+                relative_link: `/project/${id}`,
+                user_target: document.createdBy.id
+            });
+        } catch (err) {
+            console.log(err.message)
+        }
+
         history.push(`/project/${document.id}`)
 
         console.log("Summary Id", id)

@@ -12,6 +12,7 @@ import Clients from './pages/Clients';
 import Project from './pages/Project';
 import Settings from './pages/Settings';
 import ManageCategories from './components/ManageCategories';
+import Notifications from './components/Notifications';
 
 function App() {
 
@@ -31,6 +32,11 @@ function App() {
               <Route exact path="/">
                 {!user && <Redirect to="/login" />}
                 {user && <Dashboard />}
+              </Route>
+
+              <Route path="/notifications">
+                {user && <Notifications />}
+                {!user && <LoginPage />}
               </Route>
 
               <Route path="/requests/:id">
