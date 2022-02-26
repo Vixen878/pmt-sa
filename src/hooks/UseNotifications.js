@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 import { UseAuthContext } from '../hooks/useAuthContext';
 import { collection, onSnapshot, query, where } from 'firebase/firestore'
+import { GetUserAccessLevel, Users } from '../hooks/useUserAccessLevel';
 
 import { db } from "../firebase/config";
 
 export const UseNotifications = () => {
     const { user } = UseAuthContext();
+    const { accessLevel } = GetUserAccessLevel();
 
     Array.prototype.unique = function () {
         var a = this.concat();
@@ -20,6 +22,7 @@ export const UseNotifications = () => {
     };
 
     const [notifications, setNotifications] = useState(null)
+    const [newNotifications, setNewNotifications] = useState(false)
     const [error, setError] = useState(null)
     const [user_notifications, setUserNotifications] = useState(null)
     const [role_notifications, setRoleNotifications] = useState(null)
@@ -27,7 +30,7 @@ export const UseNotifications = () => {
     useEffect(() => {
 
         let user_target_query = query(collection(db, "notifications"), where('user_target', '==', user.uid))
-        let role_target_query = query(collection(db, "notifications"), where('role_target', 'array-contains', 'client'))
+        let role_target_query = query(collection(db, "notifications"), where('role_target', 'array-contains', (accessLevel === Users.Admin ? 'admin' : 'acm')))
 
         const user_query_unsubscribe = onSnapshot(user_target_query, (snapshot) => {
             let results = []
@@ -38,6 +41,8 @@ export const UseNotifications = () => {
             setUserNotifications(results)
 
             setNotifications(user_notifications?.concat(role_notifications).unique())
+
+            setNewNotifications(notifications?.filter(n => n?.is_read === false).length > 0)
         }, (err) => {
             console.log(err.message)
             setError(err)
@@ -52,6 +57,8 @@ export const UseNotifications = () => {
             setRoleNotifications(results)
 
             setNotifications(user_notifications?.concat(role_notifications).unique())
+
+            setNewNotifications(notifications?.filter(n => n?.is_read === false).length > 0)
         }, (err) => {
             console.log(err.message)
             setError(err)
@@ -61,9 +68,9 @@ export const UseNotifications = () => {
             user_query_unsubscribe()
             role_query_unsubscribe()
         };
-    }, [notifications]);
+    }, [notifications, role_notifications, user.uid, user_notifications]);
 
 
 
-    return { notifications, error }
+    return { notifications, newNotifications, error }
 }
