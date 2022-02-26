@@ -1,9 +1,22 @@
+import { updateDoc, doc } from 'firebase/firestore';
 import React from 'react';
 import { UseNotifications } from '../hooks/UseNotifications';
+
+import { db } from "../firebase/config";
 
 const Notifications = () => {
 
     const { notifications, error } = UseNotifications();
+
+    async function markAllAsRead() {
+        notifications.forEach(async notification => {
+            if (notification) {
+                await updateDoc(doc(db, "notifications", notification.id), {
+                    is_read: true
+                })
+            }
+        });
+    }
 
     return (
         <div className='m-5'>
@@ -13,6 +26,10 @@ const Notifications = () => {
                 </div>
                 <span className='text-2xl font-bold'>
                     Notifications
+                </span>
+                <span className="rounded border p-3 bg-primaryGreen font-semibold text-white hover:bg-green-700 cursor-pointer right"
+                    onClick={markAllAsRead}>
+                    Mark all as read
                 </span>
             </div>
             <div className='mt-4 flex flex-col w-full'>
