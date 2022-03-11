@@ -2,14 +2,17 @@ import { Link } from "react-router-dom"
 import { UseCollection } from "../hooks/useCollection"
 
 import { UseAuthContext } from '../hooks/useAuthContext';
-
+import { GetUserAccessLevel, Users } from "../hooks/useUserAccessLevel";
 
 export default function ManageProjects() {
 
     const { user } = UseAuthContext()
+    const { accessLevel } = GetUserAccessLevel();
 
-    const { documents } = UseCollection('projects',
-        ['cid', '==', user.uid])
+    const { documents } = UseCollection('projects', ['cid', '==', user.uid])
+    const allDocuments = UseCollection('projects').documents
+
+    const docs = accessLevel === Users.Admin ? allDocuments : accessLevel === Users.AccountManager ? documents : null;
 
     return (
         <div className="w-full flex flex-col px-9 py-4 antialiased overflow-hidden">
@@ -23,7 +26,7 @@ export default function ManageProjects() {
             </div>
 
             <div className="space-y-6 mt-8">
-                {documents && documents.map(doc => (
+                {docs && docs.map(doc => (
                     <Link className="flex flex-col" to={`/project/${doc.id}`} key={doc.id}>
                         <div className="p-4 flex rounded-lg shadow-lg space-x-6 items-center border">
                             <div className="flex flex-col items-center justify-center">
