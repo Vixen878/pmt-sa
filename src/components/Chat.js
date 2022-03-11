@@ -18,6 +18,7 @@ export default function Chat({ id, project }) {
 
     const [text, setText] = useState("")
     const [file, setFile] = useState("")
+    const [searchTerm, setSearchTerm] = useState("")
     const [messages, setMessages] = useState([])
 
     const { user } = UseAuthContext()
@@ -90,8 +91,21 @@ export default function Chat({ id, project }) {
                         setFile={setFile}
                         project={project} />
                     <div className="overflow-y-auto text-sm border-b-2">
-                        {messages.length ? messages.map((msg, i) => <Message key={i} msg={msg} user1={user1} />) : null}
+                        {messages.length ? messages?.filter(m => m.text.toLowerCase().includes(searchTerm.toLowerCase())).map((msg, i) => <Message key={i} msg={msg} user1={user1} />) : null}
                     </div>
+                    <div className='flex-1'></div>
+                    <form className="flex bg-primaryGreen bg-opacity-10 rounded-xl">
+                        <input type="text" className="bg-gray-100 rounded-l-xl bg-opacity-20 px-4 py-2 w-full h-11"
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            placeholder="Search messages..." />
+                        <button className="flex items-center justify-center px-4">
+                            <svg className="w-6 h-6 text-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24">
+                                <path
+                                    d="M16.32 14.9l5.39 5.4a1 1 0 0 1-1.42 1.4l-5.38-5.38a8 8 0 1 1 1.41-1.41zM10 16a6 6 0 1 0 0-12 6 6 0 0 0 0 12z" />
+                            </svg>
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
