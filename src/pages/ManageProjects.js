@@ -3,16 +3,20 @@ import { UseCollection } from "../hooks/useCollection"
 
 import { UseAuthContext } from '../hooks/useAuthContext';
 import { GetUserAccessLevel, Users } from "../hooks/useUserAccessLevel";
+import { useState } from "react";
 
 export default function ManageProjects() {
 
     const { user } = UseAuthContext()
     const { accessLevel } = GetUserAccessLevel();
 
-    const { documents } = UseCollection('projects', ['cid', '==', user.uid])
+    const [searchTerm, setSearchTerm] = useState("");
+
+    const acmDocuments = UseCollection('projects', ['cid', '==', user.uid]).documents
     const allDocuments = UseCollection('projects').documents
 
-    const docs = accessLevel === Users.Admin ? allDocuments : accessLevel === Users.AccountManager ? documents : null;
+    const docs = accessLevel === Users.Admin ? allDocuments : accessLevel === Users.AccountManager ? acmDocuments : null;
+    const searchedDocs = docs?.filter(p => p.name.toLowerCase().includes(searchTerm.toLowerCase()) || p.description.toLowerCase().includes(searchTerm.toLowerCase()))
 
     return (
         <div className="w-full flex flex-col px-9 py-4 antialiased overflow-hidden">
@@ -23,10 +27,25 @@ export default function ManageProjects() {
                 <span className='text-4xl font-bold'>
                     Manage Projects
                 </span>
+
+                <div className="flex-1"></div>
+
+                <form className="flex bg-primaryGreen bg-opacity-10 rounded-xl">
+                    <input type="text" className="bg-gray-100 rounded-l-xl bg-opacity-20 px-4 py-2 w-full h-11"
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        placeholder="Search for projects..." />
+                    <button className="flex items-center justify-center px-4">
+                        <svg className="w-6 h-6 text-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24">
+                            <path
+                                d="M16.32 14.9l5.39 5.4a1 1 0 0 1-1.42 1.4l-5.38-5.38a8 8 0 1 1 1.41-1.41zM10 16a6 6 0 1 0 0-12 6 6 0 0 0 0 12z" />
+                        </svg>
+                    </button>
+                </form>
             </div>
 
             <div className="space-y-6 mt-8">
-                {docs && docs.map(doc => (
+                {searchedDocs && searchedDocs.map(doc => (
                     <Link className="flex flex-col" to={`/project/${doc.id}`} key={doc.id}>
                         <div className="p-4 flex rounded-lg shadow-lg space-x-6 items-center border">
                             <div className="flex flex-col items-center justify-center">
